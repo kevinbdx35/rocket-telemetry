@@ -1,0 +1,8 @@
+PyQt5==5.15.10
+matplotlib==3.8.2
+numpy==1.24.3
+pandas==2.0.3
+pyserial==3.5
+threading-utils==0.3
+dataclasses==0.8
+typing-extensions==4.7.1
