@@ -2,7 +2,7 @@
 
 A modern and modular telemetry system for rockets, developed in Python with a real-time dashboard GUI.
 
-![dashboard](chemin/vers/l'image.jpg)
+![dashboard](https://github.com/kevinbdx35/rocket-telemetry/blob/main/image.png?raw=true)
 
 ## Features
 
