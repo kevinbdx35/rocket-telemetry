@@ -4,6 +4,8 @@ A modern and modular telemetry system for rockets, developed in Python with a re
 
 ![dashboard](https://github.com/kevinbdx35/rocket-telemetry/blob/main/image.png?raw=true)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W61I0YBJ)
+
 ## Features
 
 - **Modern GUI**: Professional PyQt5 dashboard with dark theme
