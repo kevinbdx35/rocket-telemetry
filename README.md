@@ -2,6 +2,8 @@
 
 A modern and modular telemetry system for rockets, developed in Python with a real-time dashboard GUI.
 
+![dashboard](chemin/vers/l'image.jpg)
+
 ## Features
 
 - **Modern GUI**: Professional PyQt5 dashboard with dark theme
