@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
+from PyQt5.QtCore import QTimer
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -17,6 +18,9 @@ class GraphWidget(QWidget):
         self.title = title
         self.max_points = max_points
         
+        # Configuration responsive
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
         # Données pour les différentes séries
         self.data_series: Dict[str, deque] = {}
         self.time_series: Dict[str, deque] = {}
@@ -25,16 +29,24 @@ class GraphWidget(QWidget):
         
         self.setup_ui()
         self.start_time = time.time()
+        
+        # Timer pour optimiser les redraws
+        self.redraw_timer = QTimer()
+        self.redraw_timer.setSingleShot(True)
+        self.redraw_timer.timeout.connect(self._perform_redraw)
+        self.pending_redraw = False
     
     def setup_ui(self):
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(5, 5, 5, 5)
         
         # Configuration matplotlib pour thème sombre
         plt.style.use('dark_background')
         
-        # Créer la figure
-        self.figure = Figure(figsize=(12, 6), facecolor='#353535')
+        # Créer la figure avec DPI adaptatif
+        self.figure = Figure(facecolor='#353535', tight_layout=True)
         self.canvas = FigureCanvas(self.figure)
+        self.canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         layout.addWidget(self.canvas)
         
         # Créer l'axe
@@ -83,8 +95,8 @@ class GraphWidget(QWidget):
         # Ajuster les limites
         self._update_limits()
         
-        # Redessiner
-        self.canvas.draw_idle()
+        # Redessiner avec optimisation
+        self._schedule_redraw()
     
     def _update_limits(self):
         if not self.data_series:
@@ -136,7 +148,22 @@ class GraphWidget(QWidget):
         self.ax.legend().remove() if self.ax.get_legend() else None
         
         # Redessiner
-        self.canvas.draw()
+        self._perform_redraw()
+    
+    def _schedule_redraw(self):
+        if not self.pending_redraw:
+            self.pending_redraw = True
+            self.redraw_timer.start(50)
+    
+    def _perform_redraw(self):
+        self.pending_redraw = False
+        self.canvas.draw_idle()
+    
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if hasattr(self, 'canvas'):
+            self.figure.tight_layout()
+            self._perform_redraw()
     
     def export_plot(self, filename: str):
         self.figure.savefig(filename, dpi=300, bbox_inches='tight', 
@@ -144,4 +171,4 @@ class GraphWidget(QWidget):
     
     def set_y_limits(self, min_val: float, max_val: float):
         self.ax.set_ylim(min_val, max_val)
-        self.canvas.draw()
+        self._perform_redraw()

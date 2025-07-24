@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, 
-                             QGridLayout, QFrame)
+                             QGridLayout, QFrame, QSizePolicy)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
@@ -7,6 +7,7 @@ from PyQt5.QtGui import QFont
 class StatusWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
         self.setup_ui()
     
     def setup_ui(self):
@@ -14,7 +15,7 @@ class StatusWidget(QWidget):
         
         # Titre
         title = QLabel("État du Système")
-        title.setFont(QFont("Arial", 14, QFont.Bold))
+        title.setFont(QFont("Arial", 12, QFont.Bold))
         title.setAlignment(Qt.AlignCenter)
         layout.addWidget(title)
         

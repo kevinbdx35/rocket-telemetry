@@ -2,7 +2,7 @@ import sys
 from typing import Optional
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, 
                              QWidget, QPushButton, QLabel, QTabWidget, QStatusBar,
-                             QGridLayout, QFrame, QSplitter)
+                             QGridLayout, QFrame, QSplitter, QSizePolicy)
 from PyQt5.QtCore import QTimer, Qt, pyqtSignal
 from PyQt5.QtGui import QFont, QPalette, QColor
 
@@ -20,7 +20,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Système de Télémétrie Fusée")
-        self.setGeometry(100, 100, 1400, 900)
+        self.setMinimumSize(800, 600)
+        self.resize(1400, 900)
+        self.showMaximized()
         
         # Composants principaux
         self.sensor = MockRocketSensor()
@@ -54,8 +56,10 @@ class MainWindow(QMainWindow):
         right_panel = self.create_right_panel()
         main_splitter.addWidget(right_panel)
         
-        # Ratio des panels
+        # Ratio des panels (25% - 75%)
         main_splitter.setSizes([300, 1100])
+        main_splitter.setCollapsible(0, False)
+        main_splitter.setCollapsible(1, False)
         
         # Status bar
         self.status_bar = QStatusBar()
@@ -64,6 +68,8 @@ class MainWindow(QMainWindow):
     
     def create_left_panel(self) -> QWidget:
         left_widget = QWidget()
+        left_widget.setMinimumWidth(280)
+        left_widget.setMaximumWidth(400)
         left_layout = QVBoxLayout(left_widget)
         
         # Panel de contrôle
@@ -84,10 +90,12 @@ class MainWindow(QMainWindow):
     
     def create_right_panel(self) -> QWidget:
         right_widget = QWidget()
+        right_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         right_layout = QVBoxLayout(right_widget)
         
         # Tabs pour différents graphiques
         tab_widget = QTabWidget()
+        tab_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
         # Tab altitude/vitesse
         self.altitude_graph = GraphWidget("Altitude (m)", "Temps (s)", "Altitude")
